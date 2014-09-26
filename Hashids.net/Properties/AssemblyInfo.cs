@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("hashids.net")]
 [assembly: AssemblyDescription("Generate YouTube-like hashes from one or many numbers. Use hashids when you do not want to expose your database ids to the user.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Markus Ullmark")]
+[assembly: AssemblyCompany("TeamBuildStuff, LLC")]
 [assembly: AssemblyProduct("Hashids.net")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
