@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace HashidsNet
-{
+namespace HashidsNet {
     /// <summary>
     /// Generate YouTube-like hashes from one or many numbers. Use hashids when you do not want to expose your database ids to the user.
     /// </summary>
@@ -46,7 +45,7 @@ namespace HashidsNet
             _minHashLength = minHashLength;
 
             if (_alphabet.Length < MinAlphabetLength)
-                throw new ArgumentException("alphabet must contain atleast 4 unique characters.", "alphabet");
+                throw new ArgumentException(string.Format("alphabet must contain at least {0} unique characters.", MinAlphabetLength), "alphabet");
 
             // setup separators
             _separators = new String(_separators.Intersect(_alphabet.ToArray()).ToArray());
@@ -57,7 +56,7 @@ namespace HashidsNet
             _separators = ConsistentShuffle(_separators, _salt);
 
             if (_separators.Length == 0 || (_alphabet.Length / _separators.Length) > SeparatorDivisor) {
-                var sepsLength = (int)Math.Ceiling(_alphabet.Length / SeparatorDivisor);
+                var sepsLength = (int) Math.Ceiling(_alphabet.Length / SeparatorDivisor);
                 if (sepsLength == 1) {
                     sepsLength = 2;
                 }
@@ -66,7 +65,8 @@ namespace HashidsNet
                     var diff = sepsLength - _separators.Length;
                     _separators += _alphabet.Substring(0, diff);
                     _alphabet = _alphabet.Substring(diff);
-                } else {
+                }
+                else {
                     _separators = _separators.Substring(0, sepsLength);
                 }
             }
@@ -75,12 +75,13 @@ namespace HashidsNet
             _alphabet = ConsistentShuffle(_alphabet, _salt);
 
             // setup guards
-            var guardCount = (int)Math.Ceiling(_alphabet.Length / GuardDivisor);
+            var guardCount = (int) Math.Ceiling(_alphabet.Length / GuardDivisor);
 
             if (_alphabet.Length < 3) {
                 _guards = _separators.Substring(0, guardCount);
                 _separators = _separators.Substring(guardCount);
-            } else {
+            }
+            else {
                 _guards = _alphabet.Substring(0, guardCount);
                 _alphabet = _alphabet.Substring(guardCount);
             }
@@ -132,7 +133,7 @@ namespace HashidsNet
             var alphabet = _alphabet;
 
             for (var i = 0; i < numbers.Length; i++) {
-                numbersHashInt += (int)(numbers[i] % (i + 100));
+                numbersHashInt += (int) (numbers[i] % (i + 100));
             }
 
             var lottery = alphabet[numbersHashInt % alphabet.Length];
@@ -148,20 +149,20 @@ namespace HashidsNet
                 ret.Append(last);
 
                 if (i + 1 < numbers.Length) {
-                    number %= ((int)last[0] + i);
-                    var sepsIndex = (int)(number % _separators.Length);
+                    number %= ((int) last[0] + i);
+                    var sepsIndex = (int) (number % _separators.Length);
 
                     ret.Append(_separators[sepsIndex]);
                 }
             }
 
             if (ret.Length < _minHashLength) {
-                var guardIndex = (numbersHashInt + (int)ret[0]) % _guards.Length;
+                var guardIndex = (numbersHashInt + (int) ret[0]) % _guards.Length;
                 var guard = _guards[guardIndex];
                 ret.Insert(0, guard);
 
                 if (ret.Length < _minHashLength) {
-                    guardIndex = (numbersHashInt + (int)ret[2]) % _guards.Length;
+                    guardIndex = (numbersHashInt + (int) ret[2]) % _guards.Length;
                     guard = _guards[guardIndex];
 
                     ret.Append(guard);
@@ -197,7 +198,7 @@ namespace HashidsNet
             int i = 0;
 
             var hashBreakdown = _guardsRegex.Replace(hash, " ");
-            var hashArray = hashBreakdown.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var hashArray = hashBreakdown.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 
             if (hashArray.Length == 3 || hashArray.Length == 2) {
                 i = 1;
@@ -209,7 +210,7 @@ namespace HashidsNet
                 hashBreakdown = hashBreakdown.Substring(1);
 
                 hashBreakdown = _separatorsRegex.Replace(hashBreakdown, " ");
-                hashArray = hashBreakdown.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                hashArray = hashBreakdown.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 
                 for (var j = 0; j < hashArray.Length; j++) {
                     var subHash = hashArray[j];
@@ -238,7 +239,7 @@ namespace HashidsNet
             var hash = new StringBuilder();
 
             do {
-                hash.Insert(0, alphabet[(int)(input % alphabet.Length)]);
+                hash.Insert(0, alphabet[(int) (input % alphabet.Length)]);
                 input = input / alphabet.Length;
             } while (input > 0);
 
@@ -250,7 +251,7 @@ namespace HashidsNet
 
             for (var i = 0; i < input.Length; i++) {
                 var pos = alphabet.IndexOf(input[i]);
-                number += (long)(pos * Math.Pow(alphabet.Length, input.Length - i - 1));
+                number += (long) (pos * Math.Pow(alphabet.Length, input.Length - i - 1));
             }
 
             return number;
@@ -264,7 +265,7 @@ namespace HashidsNet
 
             for (var i = alphabet.Length - 1; i > 0; i--, v++) {
                 v %= salt.Length;
-                p += n = (int)salt[v];
+                p += n = (int) salt[v];
                 j = (n + v + p) % i;
 
                 var temp = alphabet[j];
